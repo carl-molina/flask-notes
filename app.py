@@ -29,10 +29,33 @@ debug = DebugToolbarExtension(app)
 
 @app.get("/")
 def root():
-    """Homepage: redirect to /###."""
+    """Homepage: redirects to resgiter page."""
 
-    return redirect("/###")
+    return redirect("/register")
 
+@app.route("/register")
+def create_user():
+    """GET: Shows a form that when submitted, will register/create a user.
+        Form accepts:
+            username
+            password
+            email
+            first_name
+            last_name
+        POST: Processes the registration form by adding a new user.
+            Redirects the user to their user page.
+    """
 
+    
 
-# TODO: Part 3: Make routes for register/login
+@app.route("/login")
+def login_user():
+    """GET: Shows a login form for user.
+        Form accepts:
+            username
+            password
+        POST: Processes the login form, authenticates user.
+            Redirects user to their user page, 
+                or returns an invalid login message.
+    """
+
