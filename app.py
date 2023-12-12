@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask, url_for, redirect, render_template, flash, jsonify, request
+from flask import Flask, url_for, redirect, render_template, flash, session, request
 from flask_debugtoolbar import DebugToolbarExtension
 
 from models import db, connect_db, User, bcrypt
@@ -57,6 +57,8 @@ def create_user():
         db.session.add(new_user)
         db.session.commit()
 
+        session["user_id"] = data.username
+
         flash(f"Welcome {data['username']}!")
 
         return redirect(url_for('show_user'))
@@ -86,6 +88,9 @@ def login_user():
 
         if user and user.password == pwd:
             # on successful login, redirect to secret page
+
+            session["user_id"] = user.username
+
             flash(f"Login successful! Welcome {user.username}!")
             return redirect(url_for('show_user'))
 
@@ -95,3 +100,15 @@ def login_user():
 
     return render_template("user_login_form.html", form=form)
 
+
+@app.get("/users/<username>")
+def show_user(username):
+    """Show information about the given user"""
+
+    if "user_id" not in session:
+        flash("You must be logged in to view!")
+        return redirect("/")
+
+    else:
+        user = User.query.get_or_404(username)
+        return render_template("/user/detail.html", user=user)

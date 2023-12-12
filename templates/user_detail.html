@@ -1,0 +1,29 @@
+{% extends  'base.html' %}
+
+{% block title %}
+Post Detail
+{% endblock title %}
+
+{% block content %}
+
+<!-- Test: user_detail.html loaded; FOR TESTING DO NOT REMOVE -->
+
+<div>
+  <h1>{{ user.full_name }}</h1>
+</div>
+
+
+<div>
+  <p>Email : {{ user.email }}</p>
+</div>
+
+<div>
+  <h2>Notes</h2>
+  <ul>
+    {# {% for note of user.notes %}
+      <li>{{ note }}</li>
+    {% endfor %} #}
+  </ul>
+</div>
+
+{% endblock content %}
