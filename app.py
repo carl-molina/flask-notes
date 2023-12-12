@@ -6,7 +6,9 @@ from flask import Flask, url_for, redirect, render_template, flash, session, req
 from flask_debugtoolbar import DebugToolbarExtension
 
 from models import db, connect_db, User, bcrypt
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, CSRFProtectForm
+
+from sqlalchemy.exc import IntegrityError
 
 # from models import db, connect_db, Cupcake, DEFAULT_IMG_URL
 
@@ -55,13 +57,15 @@ def create_user():
         new_user = User(**data)
 
         db.session.add(new_user)
-        db.session.commit()
+        try:
+            db.session.commit()
+            session["user_id"] = new_user.username
+            flash(f"Welcome {new_user.username}!")
+            return redirect(url_for('show_user', username=new_user.username))
 
-        session["user_id"] = data.username
-
-        flash(f"Welcome {data['username']}!")
-
-        return redirect(url_for('show_user'))
+        except IntegrityError:
+            flash("Username/Email already exists.")
+            return render_template("user_register_form.html", form=form)
 
     else:
         return render_template("user_register_form.html", form=form)
@@ -92,7 +96,7 @@ def login_user():
             session["user_id"] = user.username
 
             flash(f"Login successful! Welcome {user.username}!")
-            return redirect(url_for('show_user'))
+            return redirect(url_for('show_user', username=user.username))
 
         else:
             # re-render the login page with an error
@@ -111,4 +115,17 @@ def show_user(username):
 
     else:
         user = User.query.get_or_404(username)
-        return render_template("/user/detail.html", user=user)
+        return render_template("user_detail.html", user=user)
+
+
+@app.post('/logout')
+def logout():
+    """Logs user out and redirects to homepage."""
+
+    form = CSRFProtectForm()
+
+    if form.validate_on_submit():
+        # Remove "user_id" if present, but no errors if it wasn't
+        session.pop("user_id", None)
+
+    return redirect("/")
