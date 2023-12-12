@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Length, Email
+from email_validator import EmailNotValidError, EmailSyntaxError, EmailUndeliverableError
 
 
 class RegisterForm(FlaskForm):
@@ -48,4 +49,3 @@ class LoginForm(FlaskForm):
 
 class CSRFProtectForm(FlaskForm):
     """Form just for CSRF Protection"""
-    
