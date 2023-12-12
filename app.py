@@ -5,6 +5,8 @@ import os
 from flask import Flask, redirect, render_template, flash, jsonify, request
 from flask_debugtoolbar import DebugToolbarExtension
 
+from models import db, connect_db
+
 # from models import db, connect_db, Cupcake, DEFAULT_IMG_URL
 
 app = Flask(__name__)
@@ -31,3 +33,6 @@ def root():
 
     return redirect("/###")
 
+
+
+# TODO: Part 3: Make routes for register/login

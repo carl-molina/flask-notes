@@ -1,5 +1,5 @@
 # FIXME: change to User seeds
-
+# TODO: work on seed file
 
 # noinspection PyUnresolvedReferences
 from app import app
