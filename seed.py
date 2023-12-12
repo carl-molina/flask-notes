@@ -1,26 +1,28 @@
-# FIXME: change to User seeds
-# TODO: work on seed file
+"""Seed file for Flask Notes app."""
 
 # noinspection PyUnresolvedReferences
 from app import app
-from models import db, Cupcake
+from models import db, User
 
 db.drop_all()
 db.create_all()
 
-c1 = Cupcake(
-    flavor="cherry",
-    size="large",
-    rating=5,
+user_1 = User(
+    username="test_user",
+    password="test_pw",
+    email="test_user@test.com",
+    first_name="Bob",
+    last_name="Test",
 )
 
-c2 = Cupcake(
-    flavor="chocolate",
-    size="small",
-    rating=9,
-    image_url="https://www.bakedbyrachel.com/wp-content/uploads/2018/01/"
-          "chocolatecupcakesccfrosting1_bakedbyrachel.jpg"
+user_2 = User(
+    username="test_user_2",
+    password="test_pw",
+    email="test_user_2@test.com",
+    first_name="Hope",
+    last_name="Test",
 )
 
-db.session.add_all([c1, c2])
+
+db.session.add_all([user_1, user_2])
 db.session.commit()
