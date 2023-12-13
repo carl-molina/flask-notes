@@ -117,6 +117,7 @@ def show_user(username):
     """Show information about the given user"""
 
     if USERNAME not in session or session[USERNAME] != username:
+        # ^ GOOD VALIDATION CHECK HERE ^
         flash("You must be logged in to view!") #TODO: Do we want to show this? if user is trying
         return redirect("/")
 
