@@ -112,7 +112,7 @@ def login_user():
 def show_user(username):
     """Show information about the given user"""
 
-    if "user_id" not in session:
+    if 'user_id' not in session or session['user_id'] != username:
         flash("You must be logged in to view!")
         return redirect("/")
 
