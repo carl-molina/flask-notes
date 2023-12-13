@@ -10,7 +10,7 @@ from forms import RegisterForm, LoginForm, CSRFProtectForm
 
 from sqlalchemy.exc import IntegrityError
 
-# from models import db, connect_db, Cupcake, DEFAULT_IMG_URL
+# from models import db, connect_db, Cupcake, DEFAULT_IMG_URL TODO: remove
 
 app = Flask(__name__)
 
@@ -54,15 +54,17 @@ def create_user():
     form = RegisterForm()
 
     if form.validate_on_submit():
-
+        # TODO: too opaque, better to be more explicit 
+        # - username = form.data['username']
         data = {k: v for k, v in form.data.items() if k != "csrf_token"}
         print("user_signup_data: ", data)
         new_user = User.register(**data)
         
         try:
+            #TODO: pinpoint where Int error may happen, and then only include in t/c 
             db.session.add(new_user)
             db.session.commit()
-            session["user_id"] = new_user.username
+            session["user_id"] = new_user.username #TODO: change user_id to be GLOBAL_CONST = "user_id/username"
             flash(f"Welcome {new_user.username}!")
             return redirect(url_for('show_user', username=new_user.username))
 
@@ -88,7 +90,7 @@ def login_user():
     form = LoginForm()
 
     if form.validate_on_submit():
-        name = form.username.data
+        name = form.username.data #TODO: name -> username
         pwd = form.password.data
 
         user = User.authenticate(name, pwd)
@@ -113,7 +115,7 @@ def show_user(username):
     """Show information about the given user"""
 
     if 'user_id' not in session or session['user_id'] != username:
-        flash("You must be logged in to view!")
+        flash("You must be logged in to view!") #TODO: Do we want to show this? if user is trying 
         return redirect("/")
 
     else:
@@ -131,6 +133,6 @@ def logout():
 
     if form.validate_on_submit():
         # Remove "user_id" if present, but no errors if it wasn't
-        session.pop("user_id", None)
+        session.pop("user_id", None) 
 
     return redirect("/")
