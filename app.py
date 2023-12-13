@@ -2,10 +2,10 @@
 
 import os
 
-from flask import Flask, url_for, redirect, render_template, flash, session, request
+from flask import Flask, url_for, redirect, render_template, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import db, connect_db, User, bcrypt
+from models import db, connect_db, User
 from forms import RegisterForm, LoginForm, CSRFProtectForm
 
 from sqlalchemy.exc import IntegrityError
@@ -18,6 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL", 'postgresql:///flask_notes')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
+# app.config['WTF_CSRF_ENABLED'] = False
 
 connect_db(app)
 
@@ -35,6 +36,7 @@ def root():
     """Homepage: redirects to register page."""
 
     return redirect("/register")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def create_user():
@@ -54,10 +56,11 @@ def create_user():
     if form.validate_on_submit():
 
         data = {k: v for k, v in form.data.items() if k != "csrf_token"}
-        new_user = User(**data)
-
-        db.session.add(new_user)
+        print("user_signup_data: ", data)
+        new_user = User.register(**data)
+        
         try:
+            db.session.add(new_user)
             db.session.commit()
             session["user_id"] = new_user.username
             flash(f"Welcome {new_user.username}!")
@@ -88,10 +91,10 @@ def login_user():
         name = form.username.data
         pwd = form.password.data
 
-        user = User.query.filter_by(username=name).one_or_none()
+        user = User.authenticate(name, pwd)
 
-        if user and user.password == pwd:
-            # on successful login, redirect to secret page
+        if user:
+            # on successful login, redirect to user page
 
             session["user_id"] = user.username
 
@@ -115,7 +118,9 @@ def show_user(username):
 
     else:
         user = User.query.get_or_404(username)
-        return render_template("user_detail.html", user=user)
+        form = CSRFProtectForm()
+
+        return render_template("user_detail.html", user=user, form=form)
 
 
 @app.post('/logout')

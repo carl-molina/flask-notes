@@ -8,12 +8,15 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 
 # DO NOT MODIFY THIS FUNCTION
+
+
 def connect_db(app):
     """Connect to database."""
 
     app.app_context().push()
     db.app = app
     db.init_app(app)
+
 
 class User(db.Model):
     """User."""
@@ -56,16 +59,21 @@ class User(db.Model):
 
         return f"{self.first_name} {self.last_name}."
 
-
     # start_register
+
     @classmethod
-    def register(cls, username, pwd):
+    def register(cls, username, password, email, first_name, last_name):
         """Register user w/hashed password & return user."""
 
-        hashed = bcrypt.generate_password_hash(pwd).decode('utf8')
+        hashed = bcrypt.generate_password_hash(password).decode('utf8')
 
         # return instance of user w/username and hashed pwd
-        return cls(username=username, password=hashed)
+        return cls(username=username,
+                   password=hashed,
+                   email=email,
+                   first_name=first_name,
+                   last_name=last_name
+                   )
 
     # end_register
 

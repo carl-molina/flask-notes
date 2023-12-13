@@ -24,4 +24,11 @@ Post Detail
 
 </div>
 
+{% if 'user_id' in session %}
+    <form action="/logout" method="POST">
+      {{form.hidden_tag()}}
+      <button type="submit" class="btn btn-primary">Logout</button>
+    </form>
+  {% endif %}
+
 {% endblock content %}

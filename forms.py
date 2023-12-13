@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Length, Email
-from email_validator import EmailNotValidError, EmailSyntaxError, EmailUndeliverableError
+from email_validator import EmailNotValidError, EmailSyntaxError
 
 
 class RegisterForm(FlaskForm):
