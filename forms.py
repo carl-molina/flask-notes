@@ -19,7 +19,7 @@ class RegisterForm(FlaskForm):
 
     email = StringField(
         "Email",
-        validators=[InputRequired(), Email()]
+        validators=[InputRequired(), Email()] #TODO: no longer than 50char
     )
 
     first_name = StringField(
@@ -38,7 +38,7 @@ class LoginForm(FlaskForm):
 
     username = StringField(
         "Username",
-        validators=[InputRequired(), Length(min=4, max=20)]
+        validators=[InputRequired(), Length(min=4, max=20)] #TODO: validators are a sec. issue if bots try to log in
     )
 
     password = PasswordField(
