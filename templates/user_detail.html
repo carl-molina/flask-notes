@@ -19,8 +19,17 @@ Post Detail
 
 <div>
   <h2>Notes</h2>
+
+  {% if notes %}
   <ul>
+    {% for note in notes %}
+    <li>
+      <a href="/notes/{{ note.id }}/update" method="POST">{{ note.title }}</a>
+      <p>{{ note.content }}</p>
+    </li>
+    {% endfor %}
   </ul>
+  {% endif %}
 
 </div>
 

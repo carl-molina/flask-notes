@@ -93,3 +93,38 @@ class User(db.Model):
         else:
             return False
     # end_authenticate
+
+
+class Note(db.Model):
+    """Note."""
+
+    __tablename__ = "notes"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    title = db.Column(
+        db.String(100),
+        nullable=False,
+    )
+
+    content = db.Column(
+        db.Text,
+        nullable=False,
+    )
+
+    owner_username = db.Column(
+        db.String(20),
+        db.ForeignKey("users.username"),
+        nullable=False,
+    )
+
+    user = db.relationship(
+        "User", backref="notes"
+    )
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} ID={self.id}>"
